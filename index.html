@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Penny Café is a calm budgeting dashboard for young savers." />
+  <title>Penny Café | A calm place for your money</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="flower-field" aria-hidden="true">
+    <span class="flower flower-one"><i></i><b></b></span>
+    <span class="flower flower-two"><i></i><b></b></span>
+    <span class="flower flower-three"><i></i><b></b></span>
+    <span class="flower flower-four"><i></i><b></b></span>
+    <span class="leaf leaf-one"></span>
+    <span class="leaf leaf-two"></span>
+  </div>
+
+  <main class="app-shell">
+    <section id="setupView" class="setup-view" aria-labelledby="setupTitle">
+      <div class="setup-art" aria-hidden="true">
+        <div class="cafe-window"><span></span></div>
+        <div class="cafe-shelf"></div>
+        <div class="cafe-plant plant-left"><i></i><i></i><i></i></div>
+        <div class="cafe-plant plant-right"><i></i><i></i><i></i></div>
+        <div class="cafe-mug">☕</div>
+        <div class="cafe-menu">TODAY<br /><b>small steps<br />big plans</b></div>
+      </div>
+
+      <div class="setup-copy">
+        <p class="eyebrow">WELCOME TO PENNY CAFÉ</p>
+        <h1 id="setupTitle">A calmer way to plan your money.</h1>
+        <p class="setup-subtitle">Make room for the things you care about with a simple, steady money plan.</p>
+
+        <form id="setupForm" novalidate>
+          <div class="setup-step is-active" data-step="0">
+            <div class="intro-card"><span class="intro-card-icon">✦</span><div><strong>One goal at a time.</strong><p>We’ll ask you a few easy questions, then take you straight to your dashboard.</p></div></div>
+            <button class="primary-button full-button" type="button" id="createGoalButton">Create a goal <span>→</span></button>
+          </div>
+
+          <div class="setup-step" data-step="1">
+            <label for="goalName">My goal is...</label>
+            <div class="input-wrap goal-input-wrap">
+              <span class="input-emoji">✦</span>
+              <input id="goalName" name="goalName" type="text" maxlength="40" placeholder="A new art set" autocomplete="off" required />
+            </div>
+            <p class="input-hint">A concert ticket, game, bike, or anything special!</p>
+            <div class="step-actions"><button class="text-button" type="button" id="backToIntro">← Back</button><button class="primary-button" type="button" id="goalNameNext">Next: set the price <span>→</span></button></div>
+          </div>
+
+          <div class="setup-step" data-step="2">
+            <label for="goalTarget">How much does it cost?</label>
+            <div class="input-wrap price-input-wrap">
+              <span class="currency-symbol">$</span>
+              <input id="goalTarget" name="goalTarget" type="number" min="1" step="0.01" placeholder="75.00" required />
+            </div>
+            <label class="starting-label" for="startingAmount">I already have (optional)</label>
+            <div class="input-wrap">
+              <span class="currency-symbol small">$</span>
+              <input id="startingAmount" name="startingAmount" type="number" min="0" step="0.01" placeholder="0.00" />
+            </div>
+            <div class="step-actions">
+              <button class="text-button" type="button" id="backToGoal">← Back</button>
+              <button class="primary-button" type="submit">Finish & open dashboard <span>→</span></button>
+            </div>
+          </div>
+        </form>
+        <p class="privacy-note">Your plan stays on this device. No account needed.</p>
+      </div>
+    </section>
+
+    <section id="dashboardView" class="dashboard-view" hidden aria-labelledby="dashboardTitle">
+      <header class="topbar">
+        <a class="brand" href="#top" aria-label="Penny Picnic home">
+          <span class="brand-mark">✿</span>
+          <span>Penny <em>Café</em></span>
+        </a>
+        <nav class="main-nav" aria-label="Main navigation">
+          <a class="nav-link active" href="#top">Dashboard</a>
+          <a class="nav-link" href="#paymentsSection">Payments</a>
+          <a class="nav-link" href="#goalSection">My goals</a>
+        </nav>
+        <button class="avatar-button" id="resetAppButton" type="button" title="Start over" aria-label="Start over">♥</button>
+      </header>
+
+      <div class="welcome-row" id="top">
+        <div>
+          <p class="eyebrow">YOUR LITTLE MONEY GARDEN</p>
+          <h1 id="dashboardTitle">Let’s make your money bloom<span>!</span></h1>
+          <p class="welcome-copy">Small steps add up to big happy moments.</p>
+        </div>
+      </div>
+
+      <section class="overview-grid" aria-label="Money overview">
+        <article class="overview-card savings-card">
+          <div class="card-icon mint-icon">🌱</div>
+          <div><p>Saved so far</p><strong id="savedTotal">$0.00</strong><small id="savedCaption">Keep watering your goal</small></div>
+          <div class="mini-sprout" aria-hidden="true">⌁</div>
+        </article>
+        <article class="overview-card spending-card">
+          <div class="card-icon yellow-icon">🪙</div>
+          <div><p>Money moved this month</p><strong id="monthTotal">$0.00</strong><small id="monthCaption">Every coin has a job</small></div>
+        </article>
+        <article class="overview-card next-card">
+          <div class="card-icon pink-icon">🔔</div>
+          <div><p>Next payment</p><strong id="nextPaymentName">All caught up!</strong><small id="nextPaymentDate">No payments coming up</small></div>
+        </article>
+      </section>
+
+      <div class="content-grid">
+        <section class="panel payments-panel" id="paymentsSection" aria-labelledby="paymentsTitle">
+          <div class="panel-heading">
+            <div><p class="eyebrow">KEEP AN EYE ON IT</p><h2 id="paymentsTitle">Payment pocket</h2></div>
+            <button class="icon-button add-button" id="openPaymentButton" type="button" aria-label="Add a payment">+</button>
+          </div>
+          <div class="tabs" role="tablist" aria-label="Payment list filter">
+            <button class="tab-button active" type="button" role="tab" aria-selected="true" data-payment-tab="upcoming">Due soon <span id="upcomingCount">0</span></button>
+            <button class="tab-button" type="button" role="tab" aria-selected="false" data-payment-tab="completed">Completed <span id="completedCount">0</span></button>
+          </div>
+          <div id="paymentList" class="payment-list"></div>
+          <button class="subtle-add" id="openPaymentButtonBottom" type="button"><span>+</span> Add a subscription or payment</button>
+        </section>
+
+        <section class="panel log-panel" aria-labelledby="logTitle">
+          <div class="panel-heading">
+            <div><p class="eyebrow">TELL YOUR MONEY STORY</p><h2 id="logTitle">Log money</h2></div>
+            <div class="log-actions"><button class="outline-button compact-button" id="newGoalButton" type="button"><span>＋</span> Create a new goal</button><span class="tiny-flower">✦</span></div>
+          </div>
+          <form id="transactionForm" class="transaction-form">
+            <div class="money-type-toggle" role="group" aria-label="Money movement type">
+              <button type="button" class="money-type active" data-type="in">Money in <span>＋</span></button>
+              <button type="button" class="money-type" data-type="out">Money out <span>−</span></button>
+            </div>
+            <button class="batch-button" id="openBatchButton" type="button" hidden>＋ Add Many</button>
+            <label for="transactionAmount">How much?</label>
+            <div class="input-wrap amount-wrap"><span class="currency-symbol">$</span><input id="transactionAmount" type="number" min="0.01" step="0.01" placeholder="10.00" required /></div>
+            <label for="transactionNote">What was it for?</label>
+            <input class="plain-input" id="transactionNote" maxlength="35" type="text" placeholder="Allowance, snack, dog walking..." required />
+            <label for="transactionDate">When did it happen?</label>
+            <input class="plain-input" id="transactionDate" type="date" required />
+            <button class="primary-button full-button" type="submit">Add to my list <span>→</span></button>
+          </form>
+          <div class="recent-activity">
+            <div class="recent-heading"><h3>Recent activity</h3><span id="activityCount">0 entries</span></div>
+            <ul id="activityList" class="activity-list"></ul>
+          </div>
+        </section>
+      </div>
+
+      <section class="goal-section" id="goalSection" aria-labelledby="goalTitle">
+        <div class="goal-heading-row">
+          <div><p class="eyebrow">YOUR BIG LITTLE DREAM</p><h2 id="goalTitle">Watch your goal grow</h2></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-illustration" aria-hidden="true"><span class="goal-sun">☀</span><span class="goal-cloud">☁</span><span class="goal-hill hill-back"></span><span class="goal-hill hill-front"></span><span class="goal-flower flower-a">✿</span><span class="goal-flower flower-b">✿</span><span class="goal-flower flower-c">✿</span></div>
+          <div class="goal-info">
+            <div class="goal-title-line"><h3 id="goalNameDisplay">Your next prize</h3><button class="edit-goal" id="editGoalButton" type="button">Edit</button></div>
+            <div class="progress-meta"><span id="progressAmount">$0 saved</span><span><strong id="progressPercent">0%</strong> of <span id="goalTargetDisplay">$0.00</span></span></div>
+            <div class="progress-track"><div class="progress-fill" id="progressFill"><span class="progress-sparkle">✦</span></div></div>
+            <p class="goal-encouragement" id="goalEncouragement">Every little bit helps your dream grow.</p>
+          </div>
+          <div class="goal-sticker"><span>YOU<br />GOT<br />THIS!</span> ✦</div>
+        </div>
+      </section>
+
+      <section class="insights-grid" aria-label="Savings visuals">
+        <article class="panel piggy-panel" aria-labelledby="piggyTitle">
+          <div class="panel-heading">
+            <div><p class="eyebrow">YOUR SAVINGS JAR</p><h2 id="piggyTitle">Coins in the piggy bank</h2></div>
+            <span class="tiny-flower">✦</span>
+          </div>
+          <div class="piggy-layout">
+            <div class="piggy-bank-wrap">
+              <svg class="piggy-bank" viewBox="0 0 210 190" role="img" aria-labelledby="piggyGraphicTitle piggyGraphicDesc">
+                <title id="piggyGraphicTitle">Savings piggy bank</title>
+                <desc id="piggyGraphicDesc">A transparent piggy bank that fills with coins as savings grow.</desc>
+                <defs><clipPath id="piggyClip"><path d="M43 73C26 75 16 91 19 113c3 28 25 43 62 45h44c31-2 53-17 56-43 3-25-12-42-35-44-10-17-27-26-48-26-22 0-42 10-55 28Z" /></clipPath></defs>
+                <path class="piggy-ear" d="M48 72 28 49c-6-7 3-17 11-12l28 18Z" />
+                <path class="piggy-ear" d="m143 69 21-21c7-7 16 2 10 10l-17 26Z" />
+                <g clip-path="url(#piggyClip)"><rect id="piggyFill" class="piggy-fill" x="12" y="155" width="180" height="0" /><g id="piggyCoins"></g></g>
+                <path class="piggy-body" d="M43 73C26 75 16 91 19 113c3 28 25 43 62 45h44c31-2 53-17 56-43 3-25-12-42-35-44-10-17-27-26-48-26-22 0-42 10-55 28Z" />
+                <path class="piggy-outline" d="M43 73C26 75 16 91 19 113c3 28 25 43 62 45h44c31-2 53-17 56-43 3-25-12-42-35-44-10-17-27-26-48-26-22 0-42 10-55 28Z" />
+                <path class="piggy-leg" d="M52 148v20c0 6 17 6 17 0v-19M132 148v20c0 6 17 6 17 0v-20" />
+                <path class="piggy-tail" d="M178 101c21-12 18 13 5 13" />
+                <ellipse class="piggy-snout" cx="164" cy="107" rx="23" ry="17" /><circle class="piggy-nostril" cx="156" cy="105" r="3" /><circle class="piggy-nostril" cx="170" cy="105" r="3" />
+                <circle class="piggy-eye" cx="139" cy="83" r="4" /><path class="piggy-slot" d="M84 57h24" />
+              </svg>
+            </div>
+            <div class="piggy-copy"><div class="piggy-amount"><strong id="piggySavedAmount">$0.00</strong><span>saved of <b id="piggyGoalAmount">$0.00</b></span></div><div class="piggy-track"><div id="piggyFillBar" class="piggy-fill-bar"></div></div><p id="piggyMessage">Your first coin is ready to go in.</p></div>
+          </div>
+          <div id="greatJobBanner" class="great-job-banner" role="status" aria-live="polite" hidden><span class="great-job-icon">✦</span><span><strong>Great Job!</strong><small>You filled your piggy bank and reached your goal.</small></span><span class="great-job-sparkles">✦ ✧ ✦</span></div>
+        </article>
+
+        <article class="panel graph-panel" aria-labelledby="graphTitle">
+          <div class="panel-heading"><div><p class="eyebrow">THE MONEY PATH</p><h2 id="graphTitle">Watch it climb</h2></div><span class="graph-goal-key">Goal</span></div>
+          <p class="graph-copy">Each dot is one log. Money in rises, money out dips.</p>
+          <div class="graph-wrap"><svg id="goalGraph" class="goal-graph" viewBox="0 0 620 320" role="img" aria-labelledby="graphTitle graphDescription"><desc id="graphDescription">A line graph showing savings after each money log and a line for the goal.</desc><g id="graphGrid"></g><line id="graphGoalLine" class="graph-goal-line" x1="54" y1="40" x2="600" y2="40" /><path id="graphPath" class="graph-path" d="" /><g id="graphPoints"></g><g id="graphLabels"></g></svg></div>
+          <div class="graph-footer"><span id="graphLogCount">0 logs</span><strong id="graphCurrentAmount">$0.00 now</strong><span id="graphGoalLabel">Goal $0.00</span></div>
+        </article>
+      </section>
+
+      <section class="tips-strip" aria-label="Budgeting tip">
+        <div class="tip-icon">💡</div>
+        <div><p class="eyebrow">CAFE TIP</p><p id="tipText">Try waiting one day before buying a small treat. Tomorrow-you might decide to save it instead!</p></div>
+        <button class="tip-next" id="nextTipButton" type="button" aria-label="Next tip">↻</button>
+      </section>
+
+      <footer class="footer"><span>Made for thoughtful savers with big dreams</span><span>✦</span><span>Money can grow</span></footer>
+    </section>
+  </main>
+
+  <div id="confettiLayer" class="confetti-layer" aria-hidden="true"></div>
+  <div id="celebration" class="celebration" role="status" aria-live="polite" hidden>
+    <div class="celebration-card"><div class="celebration-flower">✿</div><p class="eyebrow">A VERY BIG HIGH FIVE</p><h2>Budgeting goal reached!</h2><p>You saved up for <strong id="celebrationGoal">your prize</strong>. That is something to celebrate!</p><button class="primary-button" id="closeCelebration" type="button">Back to my dashboard <span>→</span></button></div>
+  </div>
+
+  <dialog id="paymentDialog" class="app-dialog">
+    <form id="paymentForm" method="dialog">
+      <button class="dialog-close" type="button" data-close-dialog="paymentDialog" aria-label="Close">×</button>
+      <p class="eyebrow">ADD TO YOUR POCKET</p><h2>Add a payment</h2><p class="dialog-copy">A subscription, club fee, or anything you need to remember.</p>
+      <label for="paymentName">What is it?</label><input class="plain-input" id="paymentName" type="text" maxlength="30" placeholder="Music club" required />
+      <div class="two-fields"><div><label for="paymentAmount">How much?</label><div class="input-wrap"><span class="currency-symbol small">$</span><input id="paymentAmount" type="number" min="0.01" step="0.01" placeholder="5.00" required /></div></div><div><label for="paymentDate">Due date</label><input class="plain-input" id="paymentDate" type="date" required /></div></div>
+      <button class="primary-button full-button" type="submit">Save payment <span>→</span></button>
+    </form>
+  </dialog>
+
+  <dialog id="batchDialog" class="app-dialog batch-dialog">
+    <form id="batchForm" method="dialog">
+      <button class="dialog-close" type="button" data-close-dialog="batchDialog" aria-label="Close">×</button>
+      <p class="eyebrow">MONEY OUT, ALL AT ONCE</p><h2>Add many purchases</h2><p class="dialog-copy">Add several things you bought in one quick batch. They will all use the date below.</p>
+      <label for="batchDate">Date for these logs</label><input class="plain-input" id="batchDate" type="date" required />
+      <div class="spreadsheet-wrap" aria-label="Batch money-out spreadsheet">
+        <div class="spreadsheet-header"><span>What</span><span>How much spent</span></div>
+        <div id="batchRows" class="batch-rows"></div>
+      </div>
+      <button class="batch-add-row" id="addBatchRowButton" type="button">＋ Add another row</button>
+      <button class="primary-button full-button" type="submit">Save all logs <span>→</span></button>
+    </form>
+  </dialog>
+
+  <div id="noticeToast" class="notice-toast" role="status" aria-live="polite" hidden><span class="notice-icon">!</span><div><strong id="noticeTitle">Nothing to spend yet</strong><p id="noticeText">Add money to your tracker before logging money out.</p></div><button id="closeNotice" type="button" aria-label="Close note">×</button></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
