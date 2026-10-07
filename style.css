@@ -127,10 +127,10 @@ body::before { left: 4.2%; } body::after { right: 4.2%; }
 .dashboard-view { display: flex; flex-direction: column; }
 .dashboard-view > .topbar { order: 0; }
 .dashboard-view > .welcome-row { order: 1; }
-.dashboard-view > .insights-grid { order: 2; }
-.dashboard-view > .content-grid { order: 3; }
-.dashboard-view > .overview-grid { order: 4; }
-.dashboard-view > .goal-section { order: 5; }
+.dashboard-view > .goal-section { order: 2; }
+.dashboard-view > .insights-grid { order: 3; }
+.dashboard-view > .content-grid { order: 4; }
+.dashboard-view > .overview-grid { order: 5; }
 .dashboard-view > .tips-strip { order: 6; }
 .dashboard-view > .footer { order: 7; }
 
