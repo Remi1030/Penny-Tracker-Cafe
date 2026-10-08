@@ -159,3 +159,43 @@ body::before { left: 4.2%; } body::after { right: 4.2%; }
   .dashboard-view > .content-grid, .dashboard-view > .overview-grid { margin-bottom: 22px; }
   .dashboard-view > .tips-strip { margin-top: 24px; }
 }
+
+/* Keep the goal card useful without letting it dominate the page. */
+.goal-section { padding: 18px 22px; }
+.goal-card { grid-template-columns: 170px minmax(0, 1fr) auto; gap: 18px; }
+.goal-illustration { height: 132px; }
+.goal-info { padding: 14px 0; }
+.goal-title-line h3 { margin-bottom: 10px; }
+.goal-encouragement { margin-top: 8px; }
+.goal-sticker { width: 60px; height: 60px; margin-top: 16px; margin-right: 18px; }
+.overview-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.recurrence-select { appearance: auto; margin-bottom: 17px; padding-top: 11px; padding-bottom: 11px; color: var(--ink); }
+@media (max-width: 580px) {
+  .goal-section { padding: 18px 16px; }
+  .goal-card { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .goal-illustration { height: 112px; }
+  .goal-info { padding: 16px 17px; }
+  .overview-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Narrower widgets with the café wallpaper visible around them. */
+body::before, body::after { display: none; }
+.app-shell { width: min(1040px, calc(100% - 56px)); }
+.dashboard-view > .insights-grid,
+.dashboard-view > .content-grid,
+.dashboard-view > .goal-section,
+.dashboard-view > .tips-strip { width: 94%; margin-left: auto; margin-right: auto; }
+.panel { padding: 22px; }
+.goal-section { padding: 16px 20px; }
+@media (max-width: 580px) {
+  .app-shell { width: min(100% - 28px, 500px); }
+  .dashboard-view > .insights-grid,
+  .dashboard-view > .content-grid,
+  .dashboard-view > .goal-section,
+  .dashboard-view > .tips-strip { width: 100%; }
+  .panel { padding: 18px 16px; }
+.goal-section { padding: 16px; }
+}
+
+.payment-cancel { border: 0; padding: 4px; color: #b8847d; background: transparent; font-size: 16px; line-height: 1; }
+.payment-cancel:hover { color: #8e584f; }

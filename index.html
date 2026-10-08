@@ -78,10 +78,9 @@
         </a>
         <nav class="main-nav" aria-label="Main navigation">
           <a class="nav-link active" href="#top">Dashboard</a>
-          <a class="nav-link" href="#paymentsSection">Payments</a>
-          <a class="nav-link" href="#goalSection">My goals</a>
+          <a class="nav-link" href="#paymentsSection">Logs &amp; Payments</a>
+          <a class="nav-link" href="#tipsSection">Tips</a>
         </nav>
-        <button class="avatar-button" id="resetAppButton" type="button" title="Start over" aria-label="Start over">♥</button>
       </header>
 
       <div class="welcome-row" id="top">
@@ -91,22 +90,6 @@
           <p class="welcome-copy">Small steps add up to big happy moments.</p>
         </div>
       </div>
-
-      <section class="overview-grid" aria-label="Money overview">
-        <article class="overview-card savings-card">
-          <div class="card-icon mint-icon">🌱</div>
-          <div><p>Saved so far</p><strong id="savedTotal">$0.00</strong><small id="savedCaption">Keep watering your goal</small></div>
-          <div class="mini-sprout" aria-hidden="true">⌁</div>
-        </article>
-        <article class="overview-card spending-card">
-          <div class="card-icon yellow-icon">🪙</div>
-          <div><p>Money moved this month</p><strong id="monthTotal">$0.00</strong><small id="monthCaption">Every coin has a job</small></div>
-        </article>
-        <article class="overview-card next-card">
-          <div class="card-icon pink-icon">🔔</div>
-          <div><p>Next payment</p><strong id="nextPaymentName">All caught up!</strong><small id="nextPaymentDate">No payments coming up</small></div>
-        </article>
-      </section>
 
       <div class="content-grid">
         <section class="panel payments-panel" id="paymentsSection" aria-labelledby="paymentsTitle">
@@ -122,7 +105,7 @@
           <button class="subtle-add" id="openPaymentButtonBottom" type="button"><span>+</span> Add a subscription or payment</button>
         </section>
 
-        <section class="panel log-panel" aria-labelledby="logTitle">
+        <section class="panel log-panel" id="logSection" aria-labelledby="logTitle">
           <div class="panel-heading">
             <div><p class="eyebrow">TELL YOUR MONEY STORY</p><h2 id="logTitle">Log money</h2></div>
             <div class="log-actions"><button class="outline-button compact-button" id="newGoalButton" type="button"><span>＋</span> Create a new goal</button><span class="tiny-flower">✦</span></div>
@@ -200,7 +183,7 @@
         </article>
       </section>
 
-      <section class="tips-strip" aria-label="Budgeting tip">
+      <section class="tips-strip" id="tipsSection" aria-label="Budgeting tip">
         <div class="tip-icon">💡</div>
         <div><p class="eyebrow">CAFE TIP</p><p id="tipText">Try waiting one day before buying a small treat. Tomorrow-you might decide to save it instead!</p></div>
         <button class="tip-next" id="nextTipButton" type="button" aria-label="Next tip">↻</button>
@@ -221,6 +204,7 @@
       <p class="eyebrow">ADD TO YOUR POCKET</p><h2>Add a payment</h2><p class="dialog-copy">A subscription, club fee, or anything you need to remember.</p>
       <label for="paymentName">What is it?</label><input class="plain-input" id="paymentName" type="text" maxlength="30" placeholder="Music club" required />
       <div class="two-fields"><div><label for="paymentAmount">How much?</label><div class="input-wrap"><span class="currency-symbol small">$</span><input id="paymentAmount" type="number" min="0.01" step="0.01" placeholder="5.00" required /></div></div><div><label for="paymentDate">Due date</label><input class="plain-input" id="paymentDate" type="date" required /></div></div>
+      <label for="paymentRecurrence">Does it repeat?</label><select class="plain-input recurrence-select" id="paymentRecurrence"><option value="none">One time</option><option value="weekly">Every week</option><option value="monthly">Every month</option><option value="yearly">Every year</option></select>
       <button class="primary-button full-button" type="submit">Save payment <span>→</span></button>
     </form>
   </dialog>

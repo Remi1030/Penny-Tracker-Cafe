@@ -87,7 +87,6 @@ function setupGoalFromForm(event) {
 
 function renderAll() {
   if (!state) return;
-  renderOverview();
   renderPayments();
   renderTransactions();
   renderGoal();
@@ -101,24 +100,6 @@ function getSavedAmount() {
 
 function getUpcomingPayments() {
   return state.payments.filter((payment) => !payment.completed).sort((a, b) => a.date.localeCompare(b.date));
-}
-
-function renderOverview() {
-  const saved = getSavedAmount();
-  const totalMoved = state.transactions.reduce((total, item) => total + item.amount, 0);
-  const upcoming = getUpcomingPayments();
-  $('#savedTotal').textContent = money(saved);
-  $('#savedCaption').textContent = saved > 0 ? 'Your goal is growing!' : 'Keep watering your goal';
-  $('#monthTotal').textContent = money(totalMoved);
-  $('#monthCaption').textContent = state.transactions.length ? `${state.transactions.length} money ${state.transactions.length === 1 ? 'move' : 'moves'} logged` : 'Every coin has a job';
-  if (upcoming.length) {
-    const next = upcoming[0];
-    $('#nextPaymentName').textContent = next.name;
-    $('#nextPaymentDate').textContent = `Due ${formatDate(next.date)} · ${money(next.amount)}`;
-  } else {
-    $('#nextPaymentName').textContent = 'All caught up!';
-    $('#nextPaymentDate').textContent = 'No payments coming up';
-  }
 }
 
 function renderPayments() {
@@ -137,8 +118,9 @@ function renderPayments() {
       <div class="payment-icon">${payment.completed ? '✓' : '♪'}</div>
       <div class="payment-details"><strong>${escapeHtml(payment.name)}</strong><span>${payment.completed ? `Paid ${formatDate(payment.date)}` : `Due ${formatDate(payment.date)}`}</span></div>
       <span class="payment-price">${money(payment.amount)}</span>
-      <span class="payment-status ${payment.completed ? 'done' : ''}">${payment.completed ? 'Done' : dueLabel(payment.date)}</span>
+      <span class="payment-status ${payment.completed ? 'done' : ''}">${payment.completed ? 'Done' : payment.recurring && payment.recurring !== 'none' ? recurringLabel(payment.recurring) : dueLabel(payment.date)}</span>
       ${payment.completed ? '' : `<button class="payment-delete" type="button" data-payment-action="complete" data-payment-id="${payment.id}" aria-label="Mark ${escapeHtml(payment.name)} complete">✓</button>`}
+      <button class="payment-cancel" type="button" data-payment-action="cancel" data-payment-id="${payment.id}" aria-label="Cancel ${escapeHtml(payment.name)} permanently">×</button>
     </div>`).join('');
 }
 
@@ -148,6 +130,30 @@ function dueLabel(date) {
   if (days === 0) return 'Today';
   if (days === 1) return 'Tomorrow';
   return `${days} days`;
+}
+
+function recurringLabel(frequency) {
+  return frequency === 'weekly' ? 'Weekly' : frequency === 'monthly' ? 'Monthly' : 'Yearly';
+}
+
+function paymentSeriesId(payment) {
+  return payment.seriesId || (payment.history ? String(payment.id).split('-history-')[0] : payment.id);
+}
+
+function addRecurrence(date, frequency) {
+  const next = new Date(`${date}T12:00:00`);
+  if (frequency === 'weekly') next.setDate(next.getDate() + 7);
+  if (frequency === 'yearly') next.setFullYear(next.getFullYear() + 1);
+  if (frequency === 'monthly') {
+    const originalDay = next.getDate();
+    next.setDate(1);
+    next.setMonth(next.getMonth() + 1);
+    const lastDay = new Date(next.getFullYear(), next.getMonth() + 1, 0).getDate();
+    next.setDate(Math.min(originalDay, lastDay));
+  }
+  const month = String(next.getMonth() + 1).padStart(2, '0');
+  const day = String(next.getDate()).padStart(2, '0');
+  return `${next.getFullYear()}-${month}-${day}`;
 }
 
 function formatDate(date) {
@@ -288,7 +294,8 @@ function closeDialog(id) { document.getElementById(id).close?.(); }
 
 function handlePayment(event) {
   event.preventDefault();
-  state.payments.push({ id: Date.now(), name: $('#paymentName').value.trim(), amount: Number($('#paymentAmount').value), date: $('#paymentDate').value, completed: false });
+  const paymentId = Date.now();
+  state.payments.push({ id: paymentId, seriesId: paymentId, name: $('#paymentName').value.trim(), amount: Number($('#paymentAmount').value), date: $('#paymentDate').value, recurring: $('#paymentRecurrence').value, completed: false });
   saveState();
   event.target.reset();
   closeDialog('paymentDialog');
@@ -367,11 +374,30 @@ function attachEvents() {
   $('#newGoalButton').addEventListener('click', () => showSetup({ mode: 'new' }));
   $('#editGoalButton').addEventListener('click', () => showSetup({ mode: 'edit' }));
   $$('[data-close-dialog]').forEach((button) => button.addEventListener('click', () => closeDialog(button.dataset.closeDialog)));
-  $('#paymentList').addEventListener('click', (event) => { const button = event.target.closest('[data-payment-action="complete"]'); if (!button) return; const payment = state.payments.find((item) => String(item.id) === button.dataset.paymentId); if (payment) { payment.completed = true; saveState(); renderAll(); } });
+  $('#paymentList').addEventListener('click', (event) => {
+    const actionButton = event.target.closest('[data-payment-action]');
+    if (!actionButton) return;
+    const payment = state.payments.find((item) => String(item.id) === actionButton.dataset.paymentId);
+    if (!payment) return;
+    if (actionButton.dataset.paymentAction === 'complete') {
+      if (payment.recurring && payment.recurring !== 'none') { state.payments.push({ ...payment, id: `${payment.id}-history-${Date.now()}`, seriesId: paymentSeriesId(payment), completed: true, history: true }); payment.date = addRecurrence(payment.date, payment.recurring); payment.completed = false; } else { payment.completed = true; }
+      saveState();
+      renderAll();
+      return;
+    }
+    if (actionButton.dataset.paymentAction === 'cancel' && window.confirm(`Cancel ${payment.name} permanently? This removes its recurring schedule and payment history.`)) {
+      const seriesId = paymentSeriesId(payment);
+      state.payments = state.payments.filter((item) => {
+        const itemSeriesId = paymentSeriesId(item);
+        return itemSeriesId !== seriesId;
+      });
+      saveState();
+      renderAll();
+    }
+  });
   $('#closeCelebration').addEventListener('click', closeCelebration);
   $('#closeNotice').addEventListener('click', () => { $('#noticeToast').hidden = true; });
   $('#nextTipButton').addEventListener('click', () => { state.lastTip = ((state.lastTip || 0) + 1) % tips.length; saveState(); $('#tipText').textContent = tips[state.lastTip]; });
-  $('#resetAppButton').addEventListener('click', () => { if (window.confirm('Start a fresh money plan? Your current plan will be cleared from this device.')) { localStorage.removeItem(STORAGE_KEY); state = null; showSetup(); } });
   document.getElementById('paymentDialog').addEventListener('click', (event) => { if (event.target === event.currentTarget) closeDialog('paymentDialog'); });
   document.getElementById('batchDialog').addEventListener('click', (event) => { if (event.target === event.currentTarget) closeDialog('batchDialog'); });
 }
